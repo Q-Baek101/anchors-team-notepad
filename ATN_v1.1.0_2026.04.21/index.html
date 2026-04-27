@@ -3,640 +3,417 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anchors Team Notepad v1.1.0</title>
+  <title>Anchors Team Notepad</title>
   <style>
-    /* [2026-04-21 | v1.1.0] Anchors 브랜드 톤앤매너 적용 */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --primary:   #1F0AAD;
-      --accent:    #00BEFD;
-      --cta:       #007AFF;
-      --bg:        #111111;
-      --surface:   #0d0d0d;
-      --text:      #FFFFFF;
-      --text-sec:  #BBBBBB;
-      --text-muted:#555555;
-      --danger:    #FF6B6B;
-      --sidebar-w: 260px;
-    }
-
-    html, body {
-      height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
-      line-height: 1.75;
-      overflow: hidden;
-    }
-
-    #app { display: flex; height: 100vh; }
-
-    /* ─── Sidebar ─── */
-    #sidebar {
-      width: var(--sidebar-w);
-      min-width: var(--sidebar-w);
-      background: var(--surface);
-      border-right: 1px solid #1a1a1a;
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-    }
-
-    #sidebar-header {
-      padding: 20px 18px 14px;
-      border-bottom: 1px solid #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--text);
-    }
-
-    .logo-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 6px var(--accent);
-    }
-
-    .version-badge {
-      font-size: 9px;
-      font-weight: 600;
-      background: #1a1a1a;
-      color: var(--text-muted);
-      padding: 2px 7px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-    }
-
-    #btn-new {
-      width: 28px; height: 28px;
-      border-radius: 6px;
-      background: var(--primary);
-      border: none;
-      color: var(--accent);
-      font-size: 18px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-    }
-    #btn-new:hover { background: var(--accent); color: var(--bg); }
-
-    #search-wrap { padding: 12px 12px 8px; }
-
-    #search {
-      width: 100%;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 7px;
-      padding: 7px 12px;
-      color: var(--text);
-      font-size: 12px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    #search::placeholder { color: var(--text-muted); }
-    #search:focus { border-color: var(--primary); }
-
-    #tag-filter {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      padding: 4px 12px 10px;
-      border-bottom: 1px solid #1a1a1a;
-    }
-
-    .tag-btn {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.15s;
-      background: #1e1e1e;
-      color: var(--text-sec);
-    }
-    .tag-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .tag-btn.active { background: var(--primary); color: var(--accent); border-color: var(--primary); }
-
-    #note-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 0;
-      scrollbar-width: thin;
-      scrollbar-color: #2a2a2a transparent;
-    }
-    #note-list::-webkit-scrollbar { width: 4px; }
-    #note-list::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
-
-    .note-item {
-      padding: 11px 14px;
-      border-left: 3px solid transparent;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .note-item:hover { background: #161616; }
-    .note-item.active { background: #181826; border-left-color: var(--accent); }
-    .note-item.pinned-note { border-left-color: var(--primary); }
-    .note-item.active.pinned-note { border-left-color: var(--accent); }
-
-    .note-item-title {
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .pin-icon { font-size: 10px; color: var(--accent); }
-
-    .note-item-preview {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
-    }
-
-    .note-item-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 5px;
-    }
-
-    .tag-chip {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 7px;
-      border-radius: 20px;
-    }
-
-    .note-date { font-size: 10px; color: var(--text-muted); }
-
-    .note-count {
-      padding: 4px 14px;
-      font-size: 10px;
-      color: var(--text-muted);
-      border-top: 1px solid #1a1a1a;
-    }
-
-    /* ─── Editor ─── */
-    #editor-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: var(--bg);
-      overflow: hidden;
-    }
-
-    #editor-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 24px;
-      border-bottom: 1px solid #1a1a1a;
-      flex-wrap: wrap;
-    }
-
-    .toolbar-tag-select {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 6px;
-      color: var(--text-sec);
-      font-size: 12px;
-      padding: 5px 10px;
-      cursor: pointer;
-      outline: none;
-    }
-
-    .tb-btn {
-      padding: 5px 13px;
-      border-radius: 6px;
-      border: 1px solid #2a2a2a;
-      background: #1a1a1a;
-      color: var(--text-sec);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .tb-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .tb-btn.active { background: var(--primary); border-color: var(--primary); color: var(--accent); }
-    .tb-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
-    .tb-btn.save-btn { background: var(--primary); border-color: var(--primary); color: var(--accent); }
-    .tb-btn.save-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
-
-    .tb-sep { width: 1px; height: 20px; background: #2a2a2a; margin: 0 2px; }
-
-    #editor-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 28px 36px;
-      gap: 16px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #2a2a2a transparent;
-    }
-    #editor-body::-webkit-scrollbar { width: 4px; }
-    #editor-body::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 4px; }
-
-    #title-input {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      outline: none;
-      width: 100%;
-      font-family: inherit;
-    }
-    #title-input::placeholder { color: var(--text-muted); }
-
-    .editor-divider { height: 1px; background: #1e1e1e; }
-
-    #body-input {
-      background: transparent;
-      border: none;
-      color: var(--text-sec);
-      font-size: 14px;
-      line-height: 1.8;
-      outline: none;
-      width: 100%;
-      flex: 1;
-      resize: none;
-      min-height: 300px;
-      font-family: inherit;
-    }
-    #body-input::placeholder { color: var(--text-muted); }
-
-    #editor-footer {
-      padding: 10px 36px 16px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      border-top: 1px solid #1a1a1a;
-    }
-
-    .footer-info { font-size: 11px; color: var(--text-muted); }
-
-    .autosave-indicator {
-      font-size: 11px;
-      color: var(--accent);
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-    .autosave-indicator.show { opacity: 1; }
-
-    /* ─── Empty state ─── */
-    #empty-state {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: var(--text-muted);
-    }
-    .empty-icon { font-size: 40px; opacity: 0.3; }
-    .empty-title { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-    .empty-sub { font-size: 12px; }
-
-    /* ─── Toast ─── */
-    #toast {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      background: var(--primary);
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 10px 18px;
-      border-radius: 8px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: all 0.25s;
-      pointer-events: none;
-      z-index: 9999;
-    }
-    #toast.show { opacity: 1; transform: translateY(0); }
-
-    /* ─── Tag chip colors ─── */
-    .chip-업무     { background: rgba(31,10,173,0.35); color: #00BEFD; }
-    .chip-회의     { background: rgba(0,122,255,0.13); color: #007AFF; }
-    .chip-아이디어 { background: rgba(0,190,253,0.13); color: #00BEFD; }
-    .chip-중요     { background: rgba(255,59,48,0.13);  color: #FF6B6B; }
-    .chip-기타     { background: #3f3f3f; color: #aaaaaa; }
+    /* [2026-04-21 | v1.1.0] Anchors 브랜드 */
+    /* [2026-04-27 | v1.2.0] 로그인 인증 추가 */
+    /* [2026-04-27 | v1.2.1] 로그인 버그수정 + 유효성검사 개선 */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{--primary:#1F0AAD;--accent:#00BEFD;--cta:#007AFF;--bg:#111111;--surface:#0d0d0d;--text:#FFFFFF;--text-sec:#BBBBBB;--text-muted:#555555;--danger:#FF6B6B;--sidebar-w:260px;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.75;overflow:hidden;}
+    #app{display:flex;height:100vh;}
+    #sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid #1a1a1a;display:flex;flex-direction:column;padding:0;}
+    #sidebar-header{padding:20px 18px 14px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;}
+    .logo{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;letter-spacing:-0.5px;color:var(--text);}
+    .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
+    .version-badge{font-size:9px;font-weight:600;background:#1a1a1a;color:var(--text-muted);padding:2px 7px;border-radius:4px;letter-spacing:0.5px;}
+    #btn-new{width:28px;height:28px;border-radius:6px;background:var(--primary);border:none;color:var(--accent);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+    #btn-new:hover{background:var(--accent);color:var(--bg);}
+    #search-wrap{padding:12px 12px 8px;}
+    #search{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:7px;padding:7px 12px;color:var(--text);font-size:12px;outline:none;transition:border-color 0.2s;}
+    #search::placeholder{color:var(--text-muted);}
+    #search:focus{border-color:var(--primary);}
+    #tag-filter{display:flex;flex-wrap:wrap;gap:5px;padding:4px 12px 10px;border-bottom:1px solid #1a1a1a;}
+    .tag-btn{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid transparent;cursor:pointer;transition:all 0.15s;background:#1e1e1e;color:var(--text-sec);}
+    .tag-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .tag-btn.active{background:var(--primary);color:var(--accent);border-color:var(--primary);}
+    #note-list{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;}
+    #note-list::-webkit-scrollbar{width:4px;}
+    #note-list::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:4px;}
+    .note-item{padding:11px 14px;border-left:3px solid transparent;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
+    .note-item:hover{background:#161616;}
+    .note-item.active{background:#181826;border-left-color:var(--accent);}
+    .note-item.pinned-note{border-left-color:var(--primary);}
+    .note-item-title{font-weight:700;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+    .pin-icon{font-size:10px;color:var(--accent);}
+    .note-item-preview{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+    .note-item-meta{display:flex;align-items:center;gap:6px;margin-top:5px;}
+    .tag-chip{font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;}
+    .note-date{font-size:10px;color:var(--text-muted);}
+    .note-count{padding:4px 14px;font-size:10px;color:var(--text-muted);border-top:1px solid #1a1a1a;}
+    #editor-area{flex:1;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;}
+    #editor-toolbar{display:flex;align-items:center;gap:8px;padding:14px 24px;border-bottom:1px solid #1a1a1a;flex-wrap:wrap;}
+    .toolbar-tag-select{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:6px;color:var(--text-sec);font-size:12px;padding:5px 10px;cursor:pointer;outline:none;}
+    .tb-btn{padding:5px 13px;border-radius:6px;border:1px solid #2a2a2a;background:#1a1a1a;color:var(--text-sec);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;}
+    .tb-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .tb-btn.active{background:var(--primary);border-color:var(--primary);color:var(--accent);}
+    .tb-btn.danger:hover{border-color:var(--danger);color:var(--danger);}
+    .tb-btn.save-btn{background:var(--primary);border-color:var(--primary);color:var(--accent);}
+    .tb-btn.save-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+    .tb-sep{width:1px;height:20px;background:#2a2a2a;margin:0 2px;}
+    #editor-body{flex:1;display:flex;flex-direction:column;padding:28px 36px;gap:16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;}
+    #title-input{background:transparent;border:none;color:var(--text);font-size:24px;font-weight:700;letter-spacing:-0.5px;outline:none;width:100%;font-family:inherit;}
+    #title-input::placeholder{color:var(--text-muted);}
+    .editor-divider{height:1px;background:#1e1e1e;}
+    #body-input{background:transparent;border:none;color:var(--text-sec);font-size:14px;line-height:1.8;outline:none;width:100%;flex:1;resize:none;min-height:300px;font-family:inherit;}
+    #body-input::placeholder{color:var(--text-muted);}
+    #editor-footer{padding:10px 36px 16px;display:flex;align-items:center;gap:16px;border-top:1px solid #1a1a1a;}
+    .footer-info{font-size:11px;color:var(--text-muted);}
+    .autosave-indicator{font-size:11px;color:var(--accent);opacity:0;transition:opacity 0.4s;}
+    .autosave-indicator.show{opacity:1;}
+    #empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-muted);}
+    .empty-icon{font-size:40px;opacity:0.3;}
+    .empty-title{font-size:16px;font-weight:700;}
+    .empty-sub{font-size:12px;}
+    #toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:var(--accent);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:9999;}
+    #toast.show{opacity:1;transform:translateY(0);}
+    .chip-업무{background:rgba(31,10,173,0.35);color:#00BEFD;}
+    .chip-회의{background:rgba(0,122,255,0.13);color:#007AFF;}
+    .chip-아이디어{background:rgba(0,190,253,0.13);color:#00BEFD;}
+    .chip-중요{background:rgba(255,59,48,0.13);color:#FF6B6B;}
+    .chip-기타{background:#3f3f3f;color:#aaaaaa;}
+    #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10000;}
+    .login-card{width:380px;background:var(--surface);border:1px solid #1e1e1e;border-radius:16px;padding:40px 36px 36px;display:flex;flex-direction:column;gap:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
+    .login-logo{display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .login-logo-mark{width:44px;height:44px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;position:relative;}
+    .login-logo-mark::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);position:absolute;bottom:8px;right:8px;}
+    .login-logo-text{font-size:20px;font-weight:700;letter-spacing:-0.5px;color:var(--text);}
+    .login-logo-sub{font-size:12px;color:var(--text-muted);margin-top:-6px;}
+    .login-fields{display:flex;flex-direction:column;gap:12px;}
+    .login-field-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px;}
+    .login-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+    .login-input::placeholder{color:var(--text-muted);}
+    .login-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,10,173,0.2);}
+    .login-input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
+    .login-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--primary);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;letter-spacing:-0.3px;transition:all 0.2s;}
+    .login-btn:hover{background:var(--accent);color:var(--bg);}
+    .login-btn:active{transform:scale(0.98);}
+    .field-error{font-size:11px;color:var(--danger);min-height:16px;margin-top:5px;font-weight:500;display:none;}
+    .field-error.show{display:block;}
+    .login-error{font-size:12px;color:var(--danger);text-align:center;min-height:16px;margin-top:10px;font-weight:500;display:none;}
+    .login-error.show{display:block;}
+    .login-footer-note{font-size:11px;color:var(--text-muted);text-align:center;}
+    #user-bar{display:flex;align-items:center;gap:8px;padding:0 14px 0 18px;height:36px;background:var(--surface);border-bottom:1px solid #1a1a1a;font-size:11px;color:var(--text-muted);}
+    .user-avatar{width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+    .user-name{color:var(--text-sec);font-weight:600;}
+    .user-bar-spacer{flex:1;}
+    .logout-btn{padding:3px 10px;border-radius:5px;border:1px solid #2a2a2a;background:transparent;color:var(--text-muted);font-size:11px;cursor:pointer;transition:all 0.15s;}
+    .logout-btn:hover{border-color:var(--danger);color:var(--danger);}
   </style>
 </head>
 <body>
-
-<div id="app">
-  <!-- ═══ SIDEBAR ═══ -->
-  <div id="sidebar">
-    <div id="sidebar-header">
-      <div class="logo">
-        <div class="logo-dot"></div>
-        Notes
-        <span class="version-badge">v1.1.0</span>
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark"></div>
+      <div class="login-logo-text">Anchors Notes</div>
+      <div class="login-logo-sub">팀 전용 서비스입니다. 계정으로 로그인하세요.</div>
+    </div>
+    <div class="login-fields">
+      <div>
+        <div class="login-field-label">아이디</div>
+        <input id="login-id" class="login-input" type="text" placeholder="아이디 입력" autocomplete="username" />
+        <div class="field-error" id="login-id-error"></div>
       </div>
-      <button id="btn-new" title="새 메모 (Ctrl+N)">+</button>
+      <div>
+        <div class="login-field-label">비밀번호</div>
+        <input id="login-pw" class="login-input" type="password" placeholder="비밀번호 입력" autocomplete="current-password" />
+        <div class="field-error" id="login-pw-error"></div>
+      </div>
     </div>
-
-    <div id="search-wrap">
-      <input id="search" type="text" placeholder="제목, 본문 검색…" autocomplete="off" />
+    <div>
+      <button class="login-btn" id="login-btn">로그인</button>
+      <div class="login-error" id="login-error"></div>
     </div>
-
-    <div id="tag-filter">
-      <button class="tag-btn active" data-tag="전체">전체</button>
-      <button class="tag-btn" data-tag="업무">업무</button>
-      <button class="tag-btn" data-tag="회의">회의</button>
-      <button class="tag-btn" data-tag="아이디어">아이디어</button>
-      <button class="tag-btn" data-tag="중요">중요</button>
-      <button class="tag-btn" data-tag="기타">기타</button>
-    </div>
-
-    <div id="note-list"></div>
-    <div class="note-count" id="note-count"></div>
+    <div class="login-footer-note">© Anchors. 인가된 팀원만 접근 가능합니다.</div>
   </div>
-
-  <!-- ═══ EDITOR ═══ -->
-  <div id="editor-area">
-    <div id="empty-state">
-      <div class="empty-icon">📝</div>
-      <div class="empty-title">메모를 선택하거나 새로 만들어 보세요</div>
-      <div class="empty-sub">좌측 + 버튼 또는 Ctrl+N</div>
+</div>
+<div id="app" style="display:none;flex-direction:column;">
+  <div id="user-bar">
+    <div class="user-avatar" id="user-avatar">?</div>
+    <span class="user-name" id="user-name-display"></span><span>님</span>
+    <div class="user-bar-spacer"></div>
+    <button class="logout-btn" id="logout-btn">로그아웃</button>
+  </div>
+  <div style="display:flex;flex:1;overflow:hidden;">
+    <div id="sidebar">
+      <div id="sidebar-header">
+        <div class="logo"><div class="logo-dot"></div>Notes<span class="version-badge">v1.2.1</span></div>
+        <button id="btn-new" title="새 메모 (Ctrl+N)">+</button>
+      </div>
+      <div id="search-wrap"><input id="search" type="text" placeholder="제목, 본문 검색…" autocomplete="off" /></div>
+      <div id="tag-filter">
+        <button class="tag-btn active" data-tag="전체">전체</button>
+        <button class="tag-btn" data-tag="업무">업무</button>
+        <button class="tag-btn" data-tag="회의">회의</button>
+        <button class="tag-btn" data-tag="아이디어">아이디어</button>
+        <button class="tag-btn" data-tag="중요">중요</button>
+        <button class="tag-btn" data-tag="기타">기타</button>
+      </div>
+      <div id="note-list"></div>
+      <div class="note-count" id="note-count"></div>
     </div>
-
-    <div id="editor-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
-      <div id="editor-toolbar">
-        <select id="tag-select" class="toolbar-tag-select">
-          <option value="업무">업무</option>
-          <option value="회의">회의</option>
-          <option value="아이디어">아이디어</option>
-          <option value="중요">중요</option>
-          <option value="기타">기타</option>
-        </select>
-        <div class="tb-sep"></div>
-        <button class="tb-btn" id="btn-pin">📌 고정</button>
-        <button class="tb-btn" id="btn-copy">⎘ 복사</button>
-        <button class="tb-btn save-btn" id="btn-save">💾 저장</button>
-        <div class="tb-sep"></div>
-        <button class="tb-btn danger" id="btn-delete">🗑 삭제</button>
+    <div id="editor-area">
+      <div id="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">메모를 선택하거나 새로 만들어 보세요</div>
+        <div class="empty-sub">좌측 + 버튼 또는 Ctrl+N</div>
       </div>
-
-      <div id="editor-body" style="display:flex;flex-direction:column;">
-        <input id="title-input" type="text" placeholder="제목을 입력하세요…" maxlength="120" />
-        <div class="editor-divider"></div>
-        <textarea id="body-input" placeholder="본문을 입력하세요…"></textarea>
-      </div>
-
-      <div id="editor-footer">
-        <span class="footer-info" id="footer-date">마지막 수정: —</span>
-        <span class="footer-info" id="footer-chars">0자</span>
-        <span class="autosave-indicator" id="autosave-ind">✓ 자동 저장됨</span>
+      <div id="editor-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+        <div id="editor-toolbar">
+          <select id="tag-select" class="toolbar-tag-select">
+            <option value="업무">업무</option><option value="회의">회의</option>
+            <option value="아이디어">아이디어</option><option value="중요">중요</option><option value="기타">기타</option>
+          </select>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" id="btn-pin">📌 고정</button>
+          <button class="tb-btn" id="btn-copy">⎘ 복사</button>
+          <button class="tb-btn save-btn" id="btn-save">💾 저장</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn danger" id="btn-delete">🗑 삭제</button>
+        </div>
+        <div id="editor-body" style="display:flex;flex-direction:column;">
+          <input id="title-input" type="text" placeholder="제목을 입력하세요…" maxlength="120" />
+          <div class="editor-divider"></div>
+          <textarea id="body-input" placeholder="본문을 입력하세요…"></textarea>
+        </div>
+        <div id="editor-footer">
+          <span class="footer-info" id="footer-date">마지막 수정: —</span>
+          <span class="footer-info" id="footer-chars">0자</span>
+          <span class="autosave-indicator" id="autosave-ind">✓ 자동 저장됨</span>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
 <div id="toast"></div>
-
 <script>
-/* ══════════════════════════════════════════
-   Anchors Team Notepad — v1.1.0
-   [2026-04-21] 초기 구현 + 브랜드 적용
-   ══════════════════════════════════════════ */
+/* Anchors Team Notepad v1.2.1 [2026-04-27] */
+var TEAM_ACCOUNTS=[
+  {id:"ssbaek",name:"백승수",password:"anchors2026"},
+  {id:"team01",name:"팀원 01",password:"anchors2026"},
+  {id:"team02",name:"팀원 02",password:"anchors2026"}
+];
+var SESSION_KEY="anchors-session-v1";
+var STORAGE_KEY="anchors-notes-v1";
+var notes=[],activeId=null,filterTag="전체",searchQ="",autosaveTimer=null;
 
-const STORAGE_KEY = 'anchors-notes-v1';
-let notes = [], activeId = null, filterTag = '전체', searchQ = '', autosaveTimer = null;
+function gid(id){return document.getElementById(id);}
 
-const $noteList    = document.getElementById('note-list');
-const $noteCount   = document.getElementById('note-count');
-const $search      = document.getElementById('search');
-const $tagBtns     = document.querySelectorAll('.tag-btn');
-const $btnNew      = document.getElementById('btn-new');
-const $emptyState  = document.getElementById('empty-state');
-const $editorWrap  = document.getElementById('editor-wrap');
-const $tagSelect   = document.getElementById('tag-select');
-const $titleInput  = document.getElementById('title-input');
-const $bodyInput   = document.getElementById('body-input');
-const $btnPin      = document.getElementById('btn-pin');
-const $btnSave     = document.getElementById('btn-save');
-const $btnDelete   = document.getElementById('btn-delete');
-const $btnCopy     = document.getElementById('btn-copy');
-const $footerDate  = document.getElementById('footer-date');
-const $footerChars = document.getElementById('footer-chars');
-const $autosaveInd = document.getElementById('autosave-ind');
-const $toast       = document.getElementById('toast');
+var loginId=gid("login-id"),loginPw=gid("login-pw");
+var loginIdErr=gid("login-id-error"),loginPwErr=gid("login-pw-error"),loginErr=gid("login-error");
 
-function loadNotes() {
-  try { notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { notes = []; }
-  if (!notes.length) seedSamples();
+function showErr(el,msg){el.textContent=msg;el.classList.add("show");}
+function clearErr(el){el.textContent="";el.classList.remove("show");}
+function clearAll(){[loginIdErr,loginPwErr,loginErr].forEach(clearErr);loginId.classList.remove("error");loginPw.classList.remove("error");}
+
+function initAuth(){
+  var s=sessionStorage.getItem(SESSION_KEY);
+  if(s){try{showApp(JSON.parse(s));return;}catch(e){}}
+  gid("login-screen").style.display="flex";
 }
 
-function saveNotes() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+function showApp(user){
+  gid("login-screen").style.display="none";
+  var app=gid("app");
+  app.style.display="flex";
+  gid("user-avatar").textContent=user.name.slice(0,2);
+  gid("user-name-display").textContent=user.name;
 }
 
-function seedSamples() {
-  const now = Date.now();
-  notes = [
-    { id: now-4000, title: '🚀 ATN 프로젝트 킥오프', body: '오늘 팀 메모장 v1.1.0을 공식 시작했다.\n\n주요 목표:\n- Anchors 브랜드 디자인 적용\n- 다크 테마, 로열 블루/시안 팔레트\n- 기본 CRUD + 태그 + 검색', tag: '업무', pinned: true, createdAt: now-4000, updatedAt: now-4000 },
-    { id: now-3000, title: '디자인 시스템 컬러 팔레트', body: 'Primary: #1F0AAD (로열 블루)\nAccent: #00BEFD (시안)\nCTA: #007AFF (애플 블루)\nBG: #111111 / Surface: #0d0d0d', tag: '아이디어', pinned: false, createdAt: now-3000, updatedAt: now-3000 },
-    { id: now-2000, title: '주간 팀 미팅 노트', body: '참석: 승수, 디자인팀, 개발팀\n\n안건:\n1. v1.1.0 디자인 검토\n2. 백로그 우선순위 논의\n3. 다음 스프린트 계획', tag: '회의', pinned: false, createdAt: now-2000, updatedAt: now-2000 },
-    { id: now-1000, title: '⚠️ 배포 전 체크리스트', body: '- [x] localStorage 키 통일\n- [x] 브랜드 컬러 적용\n- [ ] 마크다운 지원 (v1.2 예정)\n- [ ] 실시간 동기화 (Supabase)', tag: '중요', pinned: false, createdAt: now-1000, updatedAt: now-1000 },
-    { id: now, title: 'Backlog 아이디어 메모', body: '내보내기(.md, .txt), 복사 기능, 메모 복제, 드래그앤드롭 정렬, 단축키 지원…', tag: '기타', pinned: false, createdAt: now, updatedAt: now },
+function doLogin(){
+  clearAll();
+  var id=loginId.value.trim();
+  var pw=loginPw.value;
+  var err=false;
+  if(!id){showErr(loginIdErr,"아이디를 입력해 주세요.");loginId.classList.add("error");err=true;}
+  if(!pw){showErr(loginPwErr,"비밀번호를 입력해 주세요.");loginPw.classList.add("error");err=true;}
+  if(err)return;
+  var user=null;
+  for(var i=0;i<TEAM_ACCOUNTS.length;i++){
+    if(TEAM_ACCOUNTS[i].id===id&&TEAM_ACCOUNTS[i].password===pw){user=TEAM_ACCOUNTS[i];break;}
+  }
+  if(!user){
+    showErr(loginErr,"아이디 또는 비밀번호를 확인해 주세요.");
+    loginPw.value="";loginPw.focus();
+    return;
+  }
+  var su={id:user.id,name:user.name};
+  sessionStorage.setItem(SESSION_KEY,JSON.stringify(su));
+  showApp(su);
+  loadNotes();renderList();
+  var f=getFiltered();if(f.length)selectNote(f[0].id);
+}
+
+function doLogout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  gid("app").style.display="none";
+  loginId.value="";loginPw.value="";
+  clearAll();
+  gid("login-screen").style.display="flex";
+  setTimeout(function(){loginId.focus();},100);
+}
+
+gid("login-btn").addEventListener("click",doLogin);
+loginId.addEventListener("keydown",function(e){if(e.key==="Enter")loginPw.focus();});
+loginPw.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+loginId.addEventListener("input",function(){clearErr(loginIdErr);loginId.classList.remove("error");});
+loginPw.addEventListener("input",function(){clearErr(loginPwErr);loginPw.classList.remove("error");});
+gid("logout-btn").addEventListener("click",doLogout);
+
+function loadNotes(){
+  try{notes=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){notes=[];}
+  if(!notes.length)seedSamples();
+}
+function saveNotes(){localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));}
+function seedSamples(){
+  var n=Date.now();
+  notes=[
+    {id:n-4000,title:"ATN v1.2.1 - 로그인 수정",body:"로그인 버그 수정 완료. 테스트 계정: ssbaek / anchors2026",tag:"업무",pinned:true,createdAt:n-4000,updatedAt:n-4000},
+    {id:n-3000,title:"디자인 컴러",body:"Primary: #1F0AAD / Accent: #00BEFD",tag:"아이디어",pinned:false,createdAt:n-3000,updatedAt:n-3000},
+    {id:n-2000,title:"팀 미팅 노트",body:"v1.2.1 유효성 검사 개선 완료",tag:"회의",pinned:false,createdAt:n-2000,updatedAt:n-2000},
+    {id:n-1000,title:"\u26a0\ufe0f 배포 체크",body:"[x] 로그인 [x] 유효성 [ ] 마크다운",tag:"중요",pinned:false,createdAt:n-1000,updatedAt:n-1000},
+    {id:n,title:"Backlog",body:"내보내기, 복제, 드래그알드롭…",tag:"기타",pinned:false,createdAt:n,updatedAt:n}
   ];
   saveNotes();
 }
 
-function fmtDate(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts);
-  const p = n => String(n).padStart(2, '0');
-  return `${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+function fmtDate(ts){
+  if(!ts)return"-";
+  var d=new Date(ts);
+  var p=function(n){return String(n).padStart(2,"0");};
+  return d.getFullYear()+"."+p(d.getMonth()+1)+"."+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
 }
 
-function getFiltered() {
+function getFiltered(){
   return notes
-    .filter(n => filterTag === '전체' || n.tag === filterTag)
-    .filter(n => !searchQ || n.title.includes(searchQ) || n.body.includes(searchQ))
-    .sort((a, b) => b.pinned - a.pinned || b.updatedAt - a.updatedAt);
+    .filter(function(n){return filterTag==="전체"||n.tag===filterTag;})
+    .filter(function(n){return !searchQ||n.title.indexOf(searchQ)>-1||n.body.indexOf(searchQ)>-1;})
+    .sort(function(a,b){return b.pinned-a.pinned||b.updatedAt-a.updatedAt;});
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function tagChip(t){return '<span class="tag-chip chip-'+t+'">'+t+'</span>';}
+function showToast(msg){
+  var t=gid("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(function(){t.classList.remove("show");},2000);
 }
 
-function tagChip(tag) {
-  return `<span class="tag-chip chip-${tag}">${tag}</span>`;
-}
-
-function showToast(msg) {
-  $toast.textContent = msg;
-  $toast.classList.add('show');
-  setTimeout(() => $toast.classList.remove('show'), 2000);
-}
-
-function renderList() {
-  const filtered = getFiltered();
-  $noteList.innerHTML = '';
-  filtered.forEach(n => {
-    const el = document.createElement('div');
-    el.className = 'note-item' + (n.id === activeId ? ' active' : '') + (n.pinned ? ' pinned-note' : '');
-    el.dataset.id = n.id;
-    el.innerHTML = `
-      <div class="note-item-title">
-        ${n.pinned ? '<span class="pin-icon">📌</span>' : ''}
-        ${escHtml(n.title || '제목 없음')}
-      </div>
-      <div class="note-item-preview">${escHtml((n.body||'').replace(/\n/g,' ').slice(0,60)) || '내용 없음'}</div>
-      <div class="note-item-meta">
-        ${tagChip(n.tag)}
-        <span class="note-date">${fmtDate(n.updatedAt)}</span>
-      </div>`;
-    el.addEventListener('click', () => selectNote(n.id));
-    $noteList.appendChild(el);
+function renderList(){
+  var f=getFiltered(),nl=gid("note-list");
+  nl.innerHTML="";
+  f.forEach(function(n){
+    var el=document.createElement("div");
+    el.className="note-item"+(n.id===activeId?" active":"")+(n.pinned?" pinned-note":"");
+    el.innerHTML='<div class="note-item-title">'+(n.pinned?'<span class="pin-icon">📌</span>':"")+escHtml(n.title||"제목 없음")+'</div>'
+      +'<div class="note-item-preview">'+escHtml((n.body||"").replace(/\n/g," ").slice(0,60))+'</div>'
+      +'<div class="note-item-meta">'+tagChip(n.tag)+'<span class="note-date">'+fmtDate(n.updatedAt)+'</span></div>';
+    el.addEventListener("click",function(){selectNote(n.id);});
+    nl.appendChild(el);
   });
-  $noteCount.textContent = `메모 ${filtered.length}개`;
+  gid("note-count").textContent="메모 "+f.length+"개";
 }
 
-function selectNote(id) {
-  activeId = id;
-  const n = notes.find(x => x.id === id);
-  if (!n) return;
-  $emptyState.style.display = 'none';
-  $editorWrap.style.display = 'flex';
-  $tagSelect.value = n.tag;
-  $titleInput.value = n.title;
-  $bodyInput.value = n.body;
-  updatePinBtn(n.pinned);
-  updateFooter(n);
-  renderList();
+function selectNote(id){
+  activeId=id;
+  var n=notes.filter(function(x){return x.id===id;})[0];
+  if(!n)return;
+  gid("empty-state").style.display="none";
+  gid("editor-wrap").style.display="flex";
+  gid("tag-select").value=n.tag;
+  gid("title-input").value=n.title;
+  gid("body-input").value=n.body;
+  updatePinBtn(n.pinned);updateFooter(n);renderList();
 }
 
-function updatePinBtn(pinned) {
-  $btnPin.textContent = pinned ? '📌 고정 해제' : '📌 고정';
-  $btnPin.classList.toggle('active', pinned);
+function updatePinBtn(p){
+  gid("btn-pin").textContent=p?"📌 고정 해제":"📌 고정";
+  gid("btn-pin").classList.toggle("active",p);
 }
 
-function updateFooter(n) {
-  $footerDate.textContent = '마지막 수정: ' + fmtDate(n.updatedAt);
-  $footerChars.textContent = (n.body||'').length + '자';
+function updateFooter(n){
+  gid("footer-date").textContent="마지막 수정: "+fmtDate(n.updatedAt);
+  gid("footer-chars").textContent=(n.body||"").length+"자";
 }
 
-function newNote() {
-  const id = Date.now();
-  notes.unshift({ id, title: '', body: '', tag: '업무', pinned: false, createdAt: id, updatedAt: id });
-  saveNotes();
-  selectNote(id);
+function newNote(){
+  var id=Date.now();
+  notes.unshift({id:id,title:"",body:"",tag:"업무",pinned:false,createdAt:id,updatedAt:id});
+  saveNotes();selectNote(id);
 }
 
-function saveActive(silent = false) {
-  const n = notes.find(x => x.id === activeId);
-  if (!n) return;
-  n.title = $titleInput.value.trim();
-  n.body  = $bodyInput.value;
-  n.tag   = $tagSelect.value;
-  n.updatedAt = Date.now();
-  saveNotes();
-  updateFooter(n);
-  renderList();
-  if (!silent) showToast('저장되었습니다');
+function saveActive(silent){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+  n.title=gid("title-input").value.trim();
+  n.body=gid("body-input").value;
+  n.tag=gid("tag-select").value;
+  n.updatedAt=Date.now();
+  saveNotes();updateFooter(n);renderList();
+  if(!silent)showToast("저장되었습니다");
 }
 
-function scheduleAutosave() {
+function scheduleAutosave(){
   clearTimeout(autosaveTimer);
-  autosaveTimer = setTimeout(() => {
+  autosaveTimer=setTimeout(function(){
     saveActive(true);
-    $autosaveInd.classList.add('show');
-    setTimeout(() => $autosaveInd.classList.remove('show'), 1800);
-  }, 1200);
+    var ai=gid("autosave-ind");ai.classList.add("show");
+    setTimeout(function(){ai.classList.remove("show");},1800);
+  },1200);
 }
 
-function deleteActive() {
-  if (!activeId) return;
-  if (!confirm('이 메모를 삭제하시겠습니까?')) return;
-  notes = notes.filter(x => x.id !== activeId);
-  saveNotes();
-  activeId = null;
-  $emptyState.style.display = 'flex';
-  $editorWrap.style.display = 'none';
-  renderList();
-  showToast('메모가 삭제되었습니다');
+function deleteActive(){
+  if(!activeId)return;
+  if(!confirm("이 메모를 삭제하시겠습니까?"))return;
+  notes=notes.filter(function(x){return x.id!==activeId;});
+  saveNotes();activeId=null;
+  gid("empty-state").style.display="flex";
+  gid("editor-wrap").style.display="none";
+  renderList();showToast("메모가 삭제되었습니다");
 }
 
-function togglePin() {
-  const n = notes.find(x => x.id === activeId);
-  if (!n) return;
-  n.pinned = !n.pinned;
-  saveNotes();
-  updatePinBtn(n.pinned);
-  renderList();
-  showToast(n.pinned ? '📌 메모를 고정했습니다' : '고정을 해제했습니다');
+function togglePin(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+  n.pinned=!n.pinned;
+  saveNotes();updatePinBtn(n.pinned);renderList();
+  showToast(n.pinned?"📌 고정되었습니다":"고정 해제되었습니다");
 }
 
-function copyContent() {
-  const n = notes.find(x => x.id === activeId);
-  if (!n) return;
-  const text = (n.title ? n.title + '\n\n' : '') + n.body;
-  navigator.clipboard.writeText(text)
-    .then(() => showToast('클립보드에 복사되었습니다'))
-    .catch(() => showToast('복사 실패 (권한 필요)'));
+function copyContent(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+    var txt=(n.title?n.title+" ":"")+n.body;
+  navigator.clipboard.writeText(txt).then(function(){showToast("복사되었습니다");}).catch(function(){showToast("복사 실패");});
 }
 
-$btnNew.addEventListener('click', newNote);
-$search.addEventListener('input', e => { searchQ = e.target.value.trim(); renderList(); });
-$tagBtns.forEach(btn => btn.addEventListener('click', () => {
-  filterTag = btn.dataset.tag;
-  $tagBtns.forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderList();
-}));
-$tagSelect.addEventListener('change', scheduleAutosave);
-$titleInput.addEventListener('input', scheduleAutosave);
-$bodyInput.addEventListener('input', () => {
-  const n = notes.find(x => x.id === activeId);
-  if (n) $footerChars.textContent = $bodyInput.value.length + '자';
+gid("btn-new").addEventListener("click",newNote);
+gid("search").addEventListener("input",function(e){searchQ=e.target.value.trim();renderList();});
+document.querySelectorAll(".tag-btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    filterTag=b.dataset.tag;
+    document.querySelectorAll(".tag-btn").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");renderList();
+  });
+});
+gid("tag-select").addEventListener("change",scheduleAutosave);
+gid("title-input").addEventListener("input",scheduleAutosave);
+gid("body-input").addEventListener("input",function(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(n)gid("footer-chars").textContent=gid("body-input").value.length+"자";
   scheduleAutosave();
 });
-$btnPin.addEventListener('click', togglePin);
-$btnSave.addEventListener('click', () => saveActive(false));
-$btnDelete.addEventListener('click', deleteActive);
-$btnCopy.addEventListener('click', copyContent);
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'n') { e.preventDefault(); newNote(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveActive(false); }
+gid("btn-pin").addEventListener("click",togglePin);
+gid("btn-save").addEventListener("click",function(){saveActive(false);});
+gid("btn-delete").addEventListener("click",deleteActive);
+gid("btn-copy").addEventListener("click",copyContent);
+document.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==="n"){e.preventDefault();newNote();}
+  if((e.ctrlKey||e.metaKey)&&e.key==="s"){e.preventDefault();saveActive(false);}
 });
 
-loadNotes();
-renderList();
-const first = getFiltered()[0];
-if (first) selectNote(first.id);
+initAuth();
+if(sessionStorage.getItem(SESSION_KEY)){loadNotes();renderList();var ff=getFiltered();if(ff.length)selectNote(ff[0].id);}
 </script>
 </body>
 </html>
