@@ -10,7 +10,7 @@
     /* [2026-04-27 | v1.2.1] 로그인 버그수정 + 유효성검사 개선 */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--primary:#1F0AAD;--accent:#00BEFD;--cta:#007AFF;--bg:#111111;--surface:#0d0d0d;--text:#FFFFFF;--text-sec:#BBBBBB;--text-muted:#555555;--danger:#FF6B6B;--sidebar-w:260px;}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.75;overflow:hidden;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.75;overflow:hidden;}
     #app{display:flex;height:100vh;}
     #sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid #1a1a1a;display:flex;flex-direction:column;padding:0;}
     #sidebar-header{padding:20px 18px 14px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;}
@@ -34,8 +34,7 @@
     .note-item:hover{background:#161616;}
     .note-item.active{background:#181826;border-left-color:var(--accent);}
     .note-item.pinned-note{border-left-color:var(--primary);}
-    .note-item.active.pinned-note{border-left-color:var(--accent);}
-    .note-item-title{font-weight:700;font-size:13px;letter-spacing:-0.3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+    .note-item-title{font-weight:700;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
     .pin-icon{font-size:10px;color:var(--accent);}
     .note-item-preview{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
     .note-item-meta{display:flex;align-items:center;gap:6px;margin-top:5px;}
@@ -53,8 +52,6 @@
     .tb-btn.save-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
     .tb-sep{width:1px;height:20px;background:#2a2a2a;margin:0 2px;}
     #editor-body{flex:1;display:flex;flex-direction:column;padding:28px 36px;gap:16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;}
-    #editor-body::-webkit-scrollbar{width:4px;}
-    #editor-body::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:4px;}
     #title-input{background:transparent;border:none;color:var(--text);font-size:24px;font-weight:700;letter-spacing:-0.5px;outline:none;width:100%;font-family:inherit;}
     #title-input::placeholder{color:var(--text-muted);}
     .editor-divider{height:1px;background:#1e1e1e;}
@@ -66,7 +63,7 @@
     .autosave-indicator.show{opacity:1;}
     #empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-muted);}
     .empty-icon{font-size:40px;opacity:0.3;}
-    .empty-title{font-size:16px;font-weight:700;letter-spacing:-0.3px;}
+    .empty-title{font-size:16px;font-weight:700;}
     .empty-sub{font-size:12px;}
     #toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:var(--accent);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:9999;}
     #toast.show{opacity:1;transform:translateY(0);}
@@ -75,12 +72,11 @@
     .chip-아이디어{background:rgba(0,190,253,0.13);color:#00BEFD;}
     .chip-중요{background:rgba(255,59,48,0.13);color:#FF6B6B;}
     .chip-기타{background:#3f3f3f;color:#aaaaaa;}
-    /* 로그인 화면 */
     #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10000;}
     .login-card{width:380px;background:var(--surface);border:1px solid #1e1e1e;border-radius:16px;padding:40px 36px 36px;display:flex;flex-direction:column;gap:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
     .login-logo{display:flex;flex-direction:column;align-items:center;gap:10px;}
     .login-logo-mark{width:44px;height:44px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;position:relative;}
-    .login-logo-mark::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);position:absolute;bottom:8px;right:8px;}
+    .login-logo-mark::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);position:absolute;bottom:8px;right:8px;}
     .login-logo-text{font-size:20px;font-weight:700;letter-spacing:-0.5px;color:var(--text);}
     .login-logo-sub{font-size:12px;color:var(--text-muted);margin-top:-6px;}
     .login-fields{display:flex;flex-direction:column;gap:12px;}
@@ -88,13 +84,12 @@
     .login-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
     .login-input::placeholder{color:var(--text-muted);}
     .login-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,10,173,0.2);}
+    .login-input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
     .login-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--primary);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;letter-spacing:-0.3px;transition:all 0.2s;}
     .login-btn:hover{background:var(--accent);color:var(--bg);}
     .login-btn:active{transform:scale(0.98);}
-    /* [v1.2.1] 필드별 에러 */
     .field-error{font-size:11px;color:var(--danger);min-height:16px;margin-top:5px;font-weight:500;display:none;}
     .field-error.show{display:block;}
-    .login-input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
     .login-error{font-size:12px;color:var(--danger);text-align:center;min-height:16px;margin-top:10px;font-weight:500;display:none;}
     .login-error.show{display:block;}
     .login-footer-note{font-size:11px;color:var(--text-muted);text-align:center;}
@@ -136,8 +131,7 @@
 <div id="app" style="display:none;flex-direction:column;">
   <div id="user-bar">
     <div class="user-avatar" id="user-avatar">?</div>
-    <span class="user-name" id="user-name-display"></span>
-    <span>님</span>
+    <span class="user-name" id="user-name-display"></span><span>님</span>
     <div class="user-bar-spacer"></div>
     <button class="logout-btn" id="logout-btn">로그아웃</button>
   </div>
@@ -194,154 +188,232 @@
 </div>
 <div id="toast"></div>
 <script>
-/* Anchors Team Notepad v1.2.1
-   [2026-04-21] 초기 구현 + 브랜드 적용
-   [2026-04-27] 로그인 인증 추가 (v1.2.0)
-   [2026-04-27] 로그인 버그수정 + 유효성검사 개선 (v1.2.1) */
-
-// 팀 계정 목록 — 계정 추가/수정 시 이 배열을 편집하세요
-const TEAM_ACCOUNTS = [
-  { id: 'ssbaek', name: '백승수', password: 'anchors2026' },
-  { id: 'team01', name: '팀원 01', password: 'anchors2026' },
-  { id: 'team02', name: '팀원 02', password: 'anchors2026' },
+/* Anchors Team Notepad v1.2.1 [2026-04-27] */
+var TEAM_ACCOUNTS=[
+  {id:"ssbaek",name:"백승수",password:"anchors2026"},
+  {id:"team01",name:"팀원 01",password:"anchors2026"},
+  {id:"team02",name:"팀원 02",password:"anchors2026"}
 ];
+var SESSION_KEY="anchors-session-v1";
+var STORAGE_KEY="anchors-notes-v1";
+var notes=[],activeId=null,filterTag="전체",searchQ="",autosaveTimer=null;
 
-const SESSION_KEY = 'anchors-session-v1';
+function gid(id){return document.getElementById(id);}
 
-// DOM refs (로그인)
-const $loginId    = document.getElementById('login-id');
-const $loginPw    = document.getElementById('login-pw');
-const $loginIdErr = document.getElementById('login-id-error');
-const $loginPwErr = document.getElementById('login-pw-error');
-const $loginErr   = document.getElementById('login-error');
+var loginId=gid("login-id"),loginPw=gid("login-pw");
+var loginIdErr=gid("login-id-error"),loginPwErr=gid("login-pw-error"),loginErr=gid("login-error");
 
-// 에러 헬퍼
-function showFieldErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
-function clearFieldErr(el) { el.textContent = ''; el.classList.remove('show'); }
-function clearAllErrors() {
-  [$loginIdErr, $loginPwErr, $loginErr].forEach(clearFieldErr);
-  $loginId.classList.remove('error');
-  $loginPw.classList.remove('error');
+function showErr(el,msg){el.textContent=msg;el.classList.add("show");}
+function clearErr(el){el.textContent="";el.classList.remove("show");}
+function clearAll(){[loginIdErr,loginPwErr,loginErr].forEach(clearErr);loginId.classList.remove("error");loginPw.classList.remove("error");}
+
+function initAuth(){
+  var s=sessionStorage.getItem(SESSION_KEY);
+  if(s){try{showApp(JSON.parse(s));return;}catch(e){}}
+  gid("login-screen").style.display="flex";
 }
 
-// 인증 초기화
-function initAuth() {
-  const s = sessionStorage.getItem(SESSION_KEY);
-  if (s) { try { showApp(JSON.parse(s)); return; } catch {} }
-  document.getElementById('login-screen').style.display = 'flex';
+function showApp(user){
+  gid("login-screen").style.display="none";
+  var app=gid("app");
+  app.style.display="flex";
+  gid("user-avatar").textContent=user.name.slice(0,2);
+  gid("user-name-display").textContent=user.name;
 }
 
-function showApp(user) {
-  document.getElementById('login-screen').style.display = 'none';
-  const app = document.getElementById('app');
-  app.style.display = 'flex';
-  document.getElementById('user-avatar').textContent = user.name.slice(0, 2);
-  document.getElementById('user-name-display').textContent = user.name;
-}
-
-// [v1.2.1] 로그인 처리 — 필드별 유효성 검사
-function doLogin() {
-  clearAllErrors();
-  const id = $loginId.value.trim();
-  const pw = $loginPw.value;
-
-  let hasError = false;
-  if (!id) {
-    showFieldErr($loginIdErr, '아이디를 입력해 주세요.');
-    $loginId.classList.add('error');
-    hasError = true;
+function doLogin(){
+  clearAll();
+  var id=loginId.value.trim();
+  var pw=loginPw.value;
+  var err=false;
+  if(!id){showErr(loginIdErr,"아이디를 입력해 주세요.");loginId.classList.add("error");err=true;}
+  if(!pw){showErr(loginPwErr,"비밀번호를 입력해 주세요.");loginPw.classList.add("error");err=true;}
+  if(err)return;
+  var user=null;
+  for(var i=0;i<TEAM_ACCOUNTS.length;i++){
+    if(TEAM_ACCOUNTS[i].id===id&&TEAM_ACCOUNTS[i].password===pw){user=TEAM_ACCOUNTS[i];break;}
   }
-  if (!pw) {
-    showFieldErr($loginPwErr, '비밀번호를 입력해 주세요.');
-    $loginPw.classList.add('error');
-    hasError = true;
-  }
-  if (hasError) return;
-
-  const user = TEAM_ACCOUNTS.find(u => u.id === id && u.password === pw);
-  if (!user) {
-    showFieldErr($loginErr, '아이디 또는 비밀번호를 확인해 주세요.');
-    $loginPw.value = '';
-    $loginPw.focus();
+  if(!user){
+    showErr(loginErr,"아이디 또는 비밀번호를 확인해 주세요.");
+    loginPw.value="";loginPw.focus();
     return;
   }
-
-  const sessionUser = { id: user.id, name: user.name };
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
-  showApp(sessionUser);
-  loadNotes();
-  renderList();
-  const first = getFiltered()[0];
-  if (first) selectNote(first.id);
+  var su={id:user.id,name:user.name};
+  sessionStorage.setItem(SESSION_KEY,JSON.stringify(su));
+  showApp(su);
+  loadNotes();renderList();
+  var f=getFiltered();if(f.length)selectNote(f[0].id);
 }
 
-function doLogout() {
+function doLogout(){
   sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('app').style.display = 'none';
-  $loginId.value = ''; $loginPw.value = '';
-  clearAllErrors();
-  document.getElementById('login-screen').style.display = 'flex';
-  setTimeout(() => $loginId.focus(), 100);
+  gid("app").style.display="none";
+  loginId.value="";loginPw.value="";
+  clearAll();
+  gid("login-screen").style.display="flex";
+  setTimeout(function(){loginId.focus();},100);
 }
 
-// 이벤트 바인딩
-document.getElementById('login-btn').addEventListener('click', doLogin);
-$loginId.addEventListener('keydown', e => { if (e.key === 'Enter') $loginPw.focus(); });
-$loginPw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-$loginId.addEventListener('input', () => { clearFieldErr($loginIdErr); $loginId.classList.remove('error'); });
-$loginPw.addEventListener('input', () => { clearFieldErr($loginPwErr); $loginPw.classList.remove('error'); });
-document.getElementById('logout-btn').addEventListener('click', doLogout);
+gid("login-btn").addEventListener("click",doLogin);
+loginId.addEventListener("keydown",function(e){if(e.key==="Enter")loginPw.focus();});
+loginPw.addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+loginId.addEventListener("input",function(){clearErr(loginIdErr);loginId.classList.remove("error");});
+loginPw.addEventListener("input",function(){clearErr(loginPwErr);loginPw.classList.remove("error");});
+gid("logout-btn").addEventListener("click",doLogout);
 
-// 메모 앱 로직
-const STORAGE_KEY = 'anchors-notes-v1';
-let notes = [], activeId = null, filterTag = '전체', searchQ = '', autosaveTimer = null;
-const $noteList=$('note-list'),$noteCount=$('note-count'),$search=$('search');
-const $tagBtns=document.querySelectorAll('.tag-btn'),$btnNew=$('btn-new');
-const $emptyState=$('empty-state'),$editorWrap=$('editor-wrap'),$tagSelect=$('tag-select');
-const $titleInput=$('title-input'),$bodyInput=$('body-input');
-const $btnPin=$('btn-pin'),$btnSave=$('btn-save'),$btnDelete=$('btn-delete'),$btnCopy=$('btn-copy');
-const $footerDate=$('footer-date'),$footerChars=$('footer-chars'),$autosaveInd=$('autosave-ind'),$toast=$('toast');
-function $(id){return document.getElementById(id);}
-function loadNotes(){try{notes=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch{notes=[];}if(!notes.length)seedSamples();}
+function loadNotes(){
+  try{notes=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch(e){notes=[];}
+  if(!notes.length)seedSamples();
+}
 function saveNotes(){localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));}
-function seedSamples(){const n=Date.now();notes=[{id:n-4000,title:'🚀 ATN 프로젝트 킥오프',body:'팀 메모장 v1.2.1
+function seedSamples(){
+  var n=Date.now();
+  notes=[
+    {id:n-4000,title:"ATN v1.2.1 - 로그인 수정",body:"로그인 버그 수정 완료. 테스트 계정: ssbaek / anchors2026",tag:"업무",pinned:true,createdAt:n-4000,updatedAt:n-4000},
+    {id:n-3000,title:"디자인 컴러",body:"Primary: #1F0AAD / Accent: #00BEFD",tag:"아이디어",pinned:false,createdAt:n-3000,updatedAt:n-3000},
+    {id:n-2000,title:"팀 미팅 노트",body:"v1.2.1 유효성 검사 개선 완료",tag:"회의",pinned:false,createdAt:n-2000,updatedAt:n-2000},
+    {id:n-1000,title:"\u26a0\ufe0f 배포 체크",body:"[x] 로그인 [x] 유효성 [ ] 마크다운",tag:"중요",pinned:false,createdAt:n-1000,updatedAt:n-1000},
+    {id:n,title:"Backlog",body:"내보내기, 복제, 드래그알드롭…",tag:"기타",pinned:false,createdAt:n,updatedAt:n}
+  ];
+  saveNotes();
+}
 
-로그인: ssbaek / anchors2026',tag:'업무',pinned:true,createdAt:n-4000,updatedAt:n-4000},{id:n-3000,title:'디자인 시스템 컬러',body:'Primary: #1F0AAD
-Accent: #00BEFD',tag:'아이디어',pinned:false,createdAt:n-3000,updatedAt:n-3000},{id:n-2000,title:'팀 미팅 노트',body:'v1.2.1 유효성 검사 개선 완료',tag:'회의',pinned:false,createdAt:n-2000,updatedAt:n-2000},{id:n-1000,title:'⚠️ 배포 체크',body:'- [x] 로그인 인증
-- [x] 필드 유효성 검사
-- [ ] 마크다운
-- [ ] Supabase',tag:'중요',pinned:false,createdAt:n-1000,updatedAt:n-1000},{id:n,title:'Backlog',body:'내보내기, 복제, 드래그앤드롭…',tag:'기타',pinned:false,createdAt:n,updatedAt:n}];saveNotes();}
-function fmtDate(ts){if(!ts)return'—';const d=new Date(ts),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
-function getFiltered(){return notes.filter(n=>filterTag==='전체'||n.tag===filterTag).filter(n=>!searchQ||n.title.includes(searchQ)||n.body.includes(searchQ)).sort((a,b)=>b.pinned-a.pinned||b.updatedAt-a.updatedAt);}
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtDate(ts){
+  if(!ts)return"-";
+  var d=new Date(ts);
+  var p=function(n){return String(n).padStart(2,"0");};
+  return d.getFullYear()+"."+p(d.getMonth()+1)+"."+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
+}
+
+function getFiltered(){
+  return notes
+    .filter(function(n){return filterTag==="전체"||n.tag===filterTag;})
+    .filter(function(n){return !searchQ||n.title.indexOf(searchQ)>-1||n.body.indexOf(searchQ)>-1;})
+    .sort(function(a,b){return b.pinned-a.pinned||b.updatedAt-a.updatedAt;});
+}
+
+function escHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 function tagChip(t){return '<span class="tag-chip chip-'+t+'">'+t+'</span>';}
-function showToast(msg){$toast.textContent=msg;$toast.classList.add('show');setTimeout(()=>$toast.classList.remove('show'),2000);}
-function renderList(){const f=getFiltered();$noteList.innerHTML='';f.forEach(n=>{const el=document.createElement('div');el.className='note-item'+(n.id===activeId?' active':'')+(n.pinned?' pinned-note':'');el.innerHTML='<div class="note-item-title">'+(n.pinned?'<span class="pin-icon">📌</span>':'')+escHtml(n.title||'제목 없음')+'</div><div class="note-item-preview">'+escHtml((n.body||'').replace(/
-/g,' ').slice(0,60))+'</div><div class="note-item-meta">'+tagChip(n.tag)+'<span class="note-date">'+fmtDate(n.updatedAt)+'</span></div>';el.addEventListener('click',()=>selectNote(n.id));$noteList.appendChild(el);});$noteCount.textContent='메모 '+f.length+'개';}
-function selectNote(id){activeId=id;const n=notes.find(x=>x.id===id);if(!n)return;$emptyState.style.display='none';$editorWrap.style.display='flex';$tagSelect.value=n.tag;$titleInput.value=n.title;$bodyInput.value=n.body;updatePinBtn(n.pinned);updateFooter(n);renderList();}
-function updatePinBtn(p){$btnPin.textContent=p?'📌 고정 해제':'📌 고정';$btnPin.classList.toggle('active',p);}
-function updateFooter(n){$footerDate.textContent='마지막 수정: '+fmtDate(n.updatedAt);$footerChars.textContent=(n.body||'').length+'자';}
-function newNote(){const id=Date.now();notes.unshift({id,title:'',body:'',tag:'업무',pinned:false,createdAt:id,updatedAt:id});saveNotes();selectNote(id);}
-function saveActive(silent=false){const n=notes.find(x=>x.id===activeId);if(!n)return;n.title=$titleInput.value.trim();n.body=$bodyInput.value;n.tag=$tagSelect.value;n.updatedAt=Date.now();saveNotes();updateFooter(n);renderList();if(!silent)showToast('저장되었습니다');}
-function scheduleAutosave(){clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>{saveActive(true);$autosaveInd.classList.add('show');setTimeout(()=>$autosaveInd.classList.remove('show'),1800);},1200);}
-function deleteActive(){if(!activeId)return;if(!confirm('이 메모를 삭제하시겠습니까?'))return;notes=notes.filter(x=>x.id!==activeId);saveNotes();activeId=null;$emptyState.style.display='flex';$editorWrap.style.display='none';renderList();showToast('메모가 삭제되었습니다');}
-function togglePin(){const n=notes.find(x=>x.id===activeId);if(!n)return;n.pinned=!n.pinned;saveNotes();updatePinBtn(n.pinned);renderList();showToast(n.pinned?'📌 고정됐습니다':'고정 해제됐습니다');}
-function copyContent(){const n=notes.find(x=>x.id===activeId);if(!n)return;navigator.clipboard.writeText((n.title?n.title+'
+function showToast(msg){
+  var t=gid("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(function(){t.classList.remove("show");},2000);
+}
 
-':'')+n.body).then(()=>showToast('복사됐습니다')).catch(()=>showToast('복사 실패'));}
-$btnNew.addEventListener('click',newNote);
-$search.addEventListener('input',e=>{searchQ=e.target.value.trim();renderList();});
-$tagBtns.forEach(b=>b.addEventListener('click',()=>{filterTag=b.dataset.tag;$tagBtns.forEach(x=>x.classList.remove('active'));b.classList.add('active');renderList();}));
-$tagSelect.addEventListener('change',scheduleAutosave);
-$titleInput.addEventListener('input',scheduleAutosave);
-$bodyInput.addEventListener('input',()=>{const n=notes.find(x=>x.id===activeId);if(n)$footerChars.textContent=$bodyInput.value.length+'자';scheduleAutosave();});
-$btnPin.addEventListener('click',togglePin);
-$btnSave.addEventListener('click',()=>saveActive(false));
-$btnDelete.addEventListener('click',deleteActive);
-$btnCopy.addEventListener('click',copyContent);
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='n'){e.preventDefault();newNote();}if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveActive(false);}});
+function renderList(){
+  var f=getFiltered(),nl=gid("note-list");
+  nl.innerHTML="";
+  f.forEach(function(n){
+    var el=document.createElement("div");
+    el.className="note-item"+(n.id===activeId?" active":"")+(n.pinned?" pinned-note":"");
+    el.innerHTML='<div class="note-item-title">'+(n.pinned?'<span class="pin-icon">📌</span>':"")+escHtml(n.title||"제목 없음")+'</div>'
+      +'<div class="note-item-preview">'+escHtml((n.body||"").replace(/\n/g," ").slice(0,60))+'</div>'
+      +'<div class="note-item-meta">'+tagChip(n.tag)+'<span class="note-date">'+fmtDate(n.updatedAt)+'</span></div>';
+    el.addEventListener("click",function(){selectNote(n.id);});
+    nl.appendChild(el);
+  });
+  gid("note-count").textContent="메모 "+f.length+"개";
+}
+
+function selectNote(id){
+  activeId=id;
+  var n=notes.filter(function(x){return x.id===id;})[0];
+  if(!n)return;
+  gid("empty-state").style.display="none";
+  gid("editor-wrap").style.display="flex";
+  gid("tag-select").value=n.tag;
+  gid("title-input").value=n.title;
+  gid("body-input").value=n.body;
+  updatePinBtn(n.pinned);updateFooter(n);renderList();
+}
+
+function updatePinBtn(p){
+  gid("btn-pin").textContent=p?"📌 고정 해제":"📌 고정";
+  gid("btn-pin").classList.toggle("active",p);
+}
+
+function updateFooter(n){
+  gid("footer-date").textContent="마지막 수정: "+fmtDate(n.updatedAt);
+  gid("footer-chars").textContent=(n.body||"").length+"자";
+}
+
+function newNote(){
+  var id=Date.now();
+  notes.unshift({id:id,title:"",body:"",tag:"업무",pinned:false,createdAt:id,updatedAt:id});
+  saveNotes();selectNote(id);
+}
+
+function saveActive(silent){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+  n.title=gid("title-input").value.trim();
+  n.body=gid("body-input").value;
+  n.tag=gid("tag-select").value;
+  n.updatedAt=Date.now();
+  saveNotes();updateFooter(n);renderList();
+  if(!silent)showToast("저장되었습니다");
+}
+
+function scheduleAutosave(){
+  clearTimeout(autosaveTimer);
+  autosaveTimer=setTimeout(function(){
+    saveActive(true);
+    var ai=gid("autosave-ind");ai.classList.add("show");
+    setTimeout(function(){ai.classList.remove("show");},1800);
+  },1200);
+}
+
+function deleteActive(){
+  if(!activeId)return;
+  if(!confirm("이 메모를 삭제하시겠습니까?"))return;
+  notes=notes.filter(function(x){return x.id!==activeId;});
+  saveNotes();activeId=null;
+  gid("empty-state").style.display="flex";
+  gid("editor-wrap").style.display="none";
+  renderList();showToast("메모가 삭제되었습니다");
+}
+
+function togglePin(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+  n.pinned=!n.pinned;
+  saveNotes();updatePinBtn(n.pinned);renderList();
+  showToast(n.pinned?"📌 고정되었습니다":"고정 해제되었습니다");
+}
+
+function copyContent(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(!n)return;
+    var txt=(n.title?n.title+" ":"")+n.body;
+  navigator.clipboard.writeText(txt).then(function(){showToast("복사되었습니다");}).catch(function(){showToast("복사 실패");});
+}
+
+gid("btn-new").addEventListener("click",newNote);
+gid("search").addEventListener("input",function(e){searchQ=e.target.value.trim();renderList();});
+document.querySelectorAll(".tag-btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    filterTag=b.dataset.tag;
+    document.querySelectorAll(".tag-btn").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");renderList();
+  });
+});
+gid("tag-select").addEventListener("change",scheduleAutosave);
+gid("title-input").addEventListener("input",scheduleAutosave);
+gid("body-input").addEventListener("input",function(){
+  var n=notes.filter(function(x){return x.id===activeId;})[0];
+  if(n)gid("footer-chars").textContent=gid("body-input").value.length+"자";
+  scheduleAutosave();
+});
+gid("btn-pin").addEventListener("click",togglePin);
+gid("btn-save").addEventListener("click",function(){saveActive(false);});
+gid("btn-delete").addEventListener("click",deleteActive);
+gid("btn-copy").addEventListener("click",copyContent);
+document.addEventListener("keydown",function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==="n"){e.preventDefault();newNote();}
+  if((e.ctrlKey||e.metaKey)&&e.key==="s"){e.preventDefault();saveActive(false);}
+});
+
 initAuth();
-if(sessionStorage.getItem(SESSION_KEY)){loadNotes();renderList();const f=getFiltered()[0];if(f)selectNote(f.id);}
+if(sessionStorage.getItem(SESSION_KEY)){loadNotes();renderList();var ff=getFiltered();if(ff.length)selectNote(ff[0].id);}
 </script>
 </body>
 </html>
