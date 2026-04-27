@@ -7,31 +7,35 @@
   <style>
     /* [2026-04-21 | v1.1.0] Anchors 브랜드 */
     /* [2026-04-27 | v1.2.0] 로그인 인증 추가 */
+    /* [2026-04-27 | v1.2.1] 로그인 버그수정 + 유효성검사 개선 */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{--primary:#1F0AAD;--accent:#00BEFD;--cta:#007AFF;--bg:#111111;--surface:#0d0d0d;--text:#FFFFFF;--text-sec:#BBBBBB;--text-muted:#555555;--danger:#FF6B6B;--sidebar-w:260px;}
     html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.75;overflow:hidden;}
     #app{display:flex;height:100vh;}
-    #sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid #1a1a1a;display:flex;flex-direction:column;}
+    #sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid #1a1a1a;display:flex;flex-direction:column;padding:0;}
     #sidebar-header{padding:20px 18px 14px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;}
-    .logo{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;letter-spacing:-0.5px;}
+    .logo{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:700;letter-spacing:-0.5px;color:var(--text);}
     .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
-    .version-badge{font-size:9px;font-weight:600;background:#1a1a1a;color:var(--text-muted);padding:2px 7px;border-radius:4px;}
+    .version-badge{font-size:9px;font-weight:600;background:#1a1a1a;color:var(--text-muted);padding:2px 7px;border-radius:4px;letter-spacing:0.5px;}
     #btn-new{width:28px;height:28px;border-radius:6px;background:var(--primary);border:none;color:var(--accent);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
     #btn-new:hover{background:var(--accent);color:var(--bg);}
     #search-wrap{padding:12px 12px 8px;}
-    #search{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:7px;padding:7px 12px;color:var(--text);font-size:12px;outline:none;}
+    #search{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:7px;padding:7px 12px;color:var(--text);font-size:12px;outline:none;transition:border-color 0.2s;}
     #search::placeholder{color:var(--text-muted);}
     #search:focus{border-color:var(--primary);}
     #tag-filter{display:flex;flex-wrap:wrap;gap:5px;padding:4px 12px 10px;border-bottom:1px solid #1a1a1a;}
-    .tag-btn{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid transparent;cursor:pointer;background:#1e1e1e;color:var(--text-sec);}
+    .tag-btn{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;border:1px solid transparent;cursor:pointer;transition:all 0.15s;background:#1e1e1e;color:var(--text-sec);}
     .tag-btn:hover{border-color:var(--accent);color:var(--accent);}
     .tag-btn.active{background:var(--primary);color:var(--accent);border-color:var(--primary);}
-    #note-list{flex:1;overflow-y:auto;padding:8px 0;}
+    #note-list{flex:1;overflow-y:auto;padding:8px 0;scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;}
+    #note-list::-webkit-scrollbar{width:4px;}
+    #note-list::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:4px;}
     .note-item{padding:11px 14px;border-left:3px solid transparent;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
     .note-item:hover{background:#161616;}
     .note-item.active{background:#181826;border-left-color:var(--accent);}
     .note-item.pinned-note{border-left-color:var(--primary);}
-    .note-item-title{font-weight:700;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+    .note-item.active.pinned-note{border-left-color:var(--accent);}
+    .note-item-title{font-weight:700;font-size:13px;letter-spacing:-0.3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
     .pin-icon{font-size:10px;color:var(--accent);}
     .note-item-preview{font-size:11.5px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
     .note-item-meta{display:flex;align-items:center;gap:6px;margin-top:5px;}
@@ -48,7 +52,9 @@
     .tb-btn.save-btn{background:var(--primary);border-color:var(--primary);color:var(--accent);}
     .tb-btn.save-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--bg);}
     .tb-sep{width:1px;height:20px;background:#2a2a2a;margin:0 2px;}
-    #editor-body{flex:1;display:flex;flex-direction:column;padding:28px 36px;gap:16px;overflow-y:auto;}
+    #editor-body{flex:1;display:flex;flex-direction:column;padding:28px 36px;gap:16px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a2a2a transparent;}
+    #editor-body::-webkit-scrollbar{width:4px;}
+    #editor-body::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:4px;}
     #title-input{background:transparent;border:none;color:var(--text);font-size:24px;font-weight:700;letter-spacing:-0.5px;outline:none;width:100%;font-family:inherit;}
     #title-input::placeholder{color:var(--text-muted);}
     .editor-divider{height:1px;background:#1e1e1e;}
@@ -60,37 +66,43 @@
     .autosave-indicator.show{opacity:1;}
     #empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--text-muted);}
     .empty-icon{font-size:40px;opacity:0.3;}
-    .empty-title{font-size:16px;font-weight:700;}
+    .empty-title{font-size:16px;font-weight:700;letter-spacing:-0.3px;}
     .empty-sub{font-size:12px;}
-    #toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:var(--accent);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5);opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:9999;}
+    #toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:var(--accent);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.5);opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;z-index:9999;}
     #toast.show{opacity:1;transform:translateY(0);}
-    .chip-업무{background:rgba(31,10,173,.35);color:#00BEFD;}
-    .chip-회의{background:rgba(0,122,255,.13);color:#007AFF;}
-    .chip-아이디어{background:rgba(0,190,253,.13);color:#00BEFD;}
-    .chip-중요{background:rgba(255,59,48,.13);color:#FF6B6B;}
-    .chip-기타{background:#3f3f3f;color:#aaa;}
-    /* [2026-04-27 | v1.2.0] 로그인 */
+    .chip-업무{background:rgba(31,10,173,0.35);color:#00BEFD;}
+    .chip-회의{background:rgba(0,122,255,0.13);color:#007AFF;}
+    .chip-아이디어{background:rgba(0,190,253,0.13);color:#00BEFD;}
+    .chip-중요{background:rgba(255,59,48,0.13);color:#FF6B6B;}
+    .chip-기타{background:#3f3f3f;color:#aaaaaa;}
+    /* 로그인 화면 */
     #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10000;}
-    .login-card{width:380px;background:var(--surface);border:1px solid #1e1e1e;border-radius:16px;padding:40px 36px 36px;display:flex;flex-direction:column;gap:28px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+    .login-card{width:380px;background:var(--surface);border:1px solid #1e1e1e;border-radius:16px;padding:40px 36px 36px;display:flex;flex-direction:column;gap:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
     .login-logo{display:flex;flex-direction:column;align-items:center;gap:10px;}
-    .login-logo-mark{width:44px;height:44px;border-radius:12px;background:var(--primary);position:relative;}
+    .login-logo-mark{width:44px;height:44px;border-radius:12px;background:var(--primary);display:flex;align-items:center;justify-content:center;position:relative;}
     .login-logo-mark::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);position:absolute;bottom:8px;right:8px;}
-    .login-logo-text{font-size:20px;font-weight:700;letter-spacing:-.5px;color:var(--text);}
-    .login-logo-sub{font-size:12px;color:var(--text-muted);}
+    .login-logo-text{font-size:20px;font-weight:700;letter-spacing:-0.5px;color:var(--text);}
+    .login-logo-sub{font-size:12px;color:var(--text-muted);margin-top:-6px;}
     .login-fields{display:flex;flex-direction:column;gap:12px;}
-    .login-field-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
-    .login-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .login-field-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px;}
+    .login-input{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
     .login-input::placeholder{color:var(--text-muted);}
-    .login-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,10,173,.2);}
-    .login-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--primary);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+    .login-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(31,10,173,0.2);}
+    .login-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--primary);color:var(--accent);font-size:14px;font-weight:700;cursor:pointer;letter-spacing:-0.3px;transition:all 0.2s;}
     .login-btn:hover{background:var(--accent);color:var(--bg);}
-    .login-error{font-size:12px;color:var(--danger);text-align:center;min-height:16px;font-weight:500;}
+    .login-btn:active{transform:scale(0.98);}
+    /* [v1.2.1] 필드별 에러 */
+    .field-error{font-size:11px;color:var(--danger);min-height:16px;margin-top:5px;font-weight:500;display:none;}
+    .field-error.show{display:block;}
+    .login-input.error{border-color:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
+    .login-error{font-size:12px;color:var(--danger);text-align:center;min-height:16px;margin-top:10px;font-weight:500;display:none;}
+    .login-error.show{display:block;}
     .login-footer-note{font-size:11px;color:var(--text-muted);text-align:center;}
     #user-bar{display:flex;align-items:center;gap:8px;padding:0 14px 0 18px;height:36px;background:var(--surface);border-bottom:1px solid #1a1a1a;font-size:11px;color:var(--text-muted);}
     .user-avatar{width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--accent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
     .user-name{color:var(--text-sec);font-weight:600;}
     .user-bar-spacer{flex:1;}
-    .logout-btn{padding:3px 10px;border-radius:5px;border:1px solid #2a2a2a;background:transparent;color:var(--text-muted);font-size:11px;cursor:pointer;transition:all .15s;}
+    .logout-btn{padding:3px 10px;border-radius:5px;border:1px solid #2a2a2a;background:transparent;color:var(--text-muted);font-size:11px;cursor:pointer;transition:all 0.15s;}
     .logout-btn:hover{border-color:var(--danger);color:var(--danger);}
   </style>
 </head>
@@ -103,27 +115,39 @@
       <div class="login-logo-sub">팀 전용 서비스입니다. 계정으로 로그인하세요.</div>
     </div>
     <div class="login-fields">
-      <div><div class="login-field-label">아이디</div><input id="login-id" class="login-input" type="text" placeholder="아이디 입력" autocomplete="username"/></div>
-      <div><div class="login-field-label">비밀번호</div><input id="login-pw" class="login-input" type="password" placeholder="비밀번호 입력" autocomplete="current-password"/></div>
+      <div>
+        <div class="login-field-label">아이디</div>
+        <input id="login-id" class="login-input" type="text" placeholder="아이디 입력" autocomplete="username" />
+        <div class="field-error" id="login-id-error"></div>
+      </div>
+      <div>
+        <div class="login-field-label">비밀번호</div>
+        <input id="login-pw" class="login-input" type="password" placeholder="비밀번호 입력" autocomplete="current-password" />
+        <div class="field-error" id="login-pw-error"></div>
+      </div>
     </div>
-    <div><button class="login-btn" id="login-btn">로그인</button><div class="login-error" id="login-error"></div></div>
+    <div>
+      <button class="login-btn" id="login-btn">로그인</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
     <div class="login-footer-note">© Anchors. 인가된 팀원만 접근 가능합니다.</div>
   </div>
 </div>
 <div id="app" style="display:none;flex-direction:column;">
   <div id="user-bar">
     <div class="user-avatar" id="user-avatar">?</div>
-    <span class="user-name" id="user-name-display"></span><span>님</span>
+    <span class="user-name" id="user-name-display"></span>
+    <span>님</span>
     <div class="user-bar-spacer"></div>
     <button class="logout-btn" id="logout-btn">로그아웃</button>
   </div>
   <div style="display:flex;flex:1;overflow:hidden;">
     <div id="sidebar">
       <div id="sidebar-header">
-        <div class="logo"><div class="logo-dot"></div>Notes<span class="version-badge">v1.2.0</span></div>
+        <div class="logo"><div class="logo-dot"></div>Notes<span class="version-badge">v1.2.1</span></div>
         <button id="btn-new" title="새 메모 (Ctrl+N)">+</button>
       </div>
-      <div id="search-wrap"><input id="search" type="text" placeholder="제목, 본문 검색…" autocomplete="off"/></div>
+      <div id="search-wrap"><input id="search" type="text" placeholder="제목, 본문 검색…" autocomplete="off" /></div>
       <div id="tag-filter">
         <button class="tag-btn active" data-tag="전체">전체</button>
         <button class="tag-btn" data-tag="업무">업무</button>
@@ -155,7 +179,7 @@
           <button class="tb-btn danger" id="btn-delete">🗑 삭제</button>
         </div>
         <div id="editor-body" style="display:flex;flex-direction:column;">
-          <input id="title-input" type="text" placeholder="제목을 입력하세요…" maxlength="120"/>
+          <input id="title-input" type="text" placeholder="제목을 입력하세요…" maxlength="120" />
           <div class="editor-divider"></div>
           <textarea id="body-input" placeholder="본문을 입력하세요…"></textarea>
         </div>
@@ -170,32 +194,121 @@
 </div>
 <div id="toast"></div>
 <script>
-/* Anchors Team Notepad v1.2.0 [2026-04-27] */
-const TEAM_ACCOUNTS=[{id:'ssbaek',name:'백승수',password:'anchors2026!'},{id:'team01',name:'팀원 01',password:'anchors2026!'},{id:'team02',name:'팀원 02',password:'anchors2026!'}];
-const SESSION_KEY='anchors-session-v1';
-function initAuth(){const s=sessionStorage.getItem(SESSION_KEY);if(s){try{showApp(JSON.parse(s));return;}catch{}}document.getElementById('login-screen').style.display='flex';}
-function showApp(u){document.getElementById('login-screen').style.display='none';const a=document.getElementById('app');a.style.display='flex';document.getElementById('user-avatar').textContent=u.name.slice(0,2);document.getElementById('user-name-display').textContent=u.name;}
-function doLogin(){const id=document.getElementById('login-id').value.trim(),pw=document.getElementById('login-pw').value,err=document.getElementById('login-error');if(!id||!pw){err.textContent='아이디와 비밀번호를 입력해 주세요.';return;}const u=TEAM_ACCOUNTS.find(x=>x.id===id&&x.password===pw);if(!u){err.textContent='아이디 또는 비밀번호가 올바르지 않습니다.';document.getElementById('login-pw').value='';return;}err.textContent='';const su={id:u.id,name:u.name};sessionStorage.setItem(SESSION_KEY,JSON.stringify(su));showApp(su);loadNotes();renderList();const f=getFiltered()[0];if(f)selectNote(f.id);}
-function doLogout(){sessionStorage.removeItem(SESSION_KEY);document.getElementById('app').style.display='none';['login-id','login-pw'].forEach(id=>document.getElementById(id).value='');document.getElementById('login-error').textContent='';document.getElementById('login-screen').style.display='flex';}
-document.getElementById('login-btn').addEventListener('click',doLogin);
-document.getElementById('login-id').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-pw').focus();});
-document.getElementById('login-pw').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('logout-btn').addEventListener('click',doLogout);
-const STORAGE_KEY='anchors-notes-v1';
-let notes=[],activeId=null,filterTag='전체',searchQ='',autosaveTimer=null;
-const $=id=>document.getElementById(id);
+/* Anchors Team Notepad v1.2.1
+   [2026-04-21] 초기 구현 + 브랜드 적용
+   [2026-04-27] 로그인 인증 추가 (v1.2.0)
+   [2026-04-27] 로그인 버그수정 + 유효성검사 개선 (v1.2.1) */
+
+// 팀 계정 목록 — 계정 추가/수정 시 이 배열을 편집하세요
+const TEAM_ACCOUNTS = [
+  { id: 'ssbaek', name: '백승수', password: 'anchors2026' },
+  { id: 'team01', name: '팀원 01', password: 'anchors2026' },
+  { id: 'team02', name: '팀원 02', password: 'anchors2026' },
+];
+
+const SESSION_KEY = 'anchors-session-v1';
+
+// DOM refs (로그인)
+const $loginId    = document.getElementById('login-id');
+const $loginPw    = document.getElementById('login-pw');
+const $loginIdErr = document.getElementById('login-id-error');
+const $loginPwErr = document.getElementById('login-pw-error');
+const $loginErr   = document.getElementById('login-error');
+
+// 에러 헬퍼
+function showFieldErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+function clearFieldErr(el) { el.textContent = ''; el.classList.remove('show'); }
+function clearAllErrors() {
+  [$loginIdErr, $loginPwErr, $loginErr].forEach(clearFieldErr);
+  $loginId.classList.remove('error');
+  $loginPw.classList.remove('error');
+}
+
+// 인증 초기화
+function initAuth() {
+  const s = sessionStorage.getItem(SESSION_KEY);
+  if (s) { try { showApp(JSON.parse(s)); return; } catch {} }
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+function showApp(user) {
+  document.getElementById('login-screen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  document.getElementById('user-avatar').textContent = user.name.slice(0, 2);
+  document.getElementById('user-name-display').textContent = user.name;
+}
+
+// [v1.2.1] 로그인 처리 — 필드별 유효성 검사
+function doLogin() {
+  clearAllErrors();
+  const id = $loginId.value.trim();
+  const pw = $loginPw.value;
+
+  let hasError = false;
+  if (!id) {
+    showFieldErr($loginIdErr, '아이디를 입력해 주세요.');
+    $loginId.classList.add('error');
+    hasError = true;
+  }
+  if (!pw) {
+    showFieldErr($loginPwErr, '비밀번호를 입력해 주세요.');
+    $loginPw.classList.add('error');
+    hasError = true;
+  }
+  if (hasError) return;
+
+  const user = TEAM_ACCOUNTS.find(u => u.id === id && u.password === pw);
+  if (!user) {
+    showFieldErr($loginErr, '아이디 또는 비밀번호를 확인해 주세요.');
+    $loginPw.value = '';
+    $loginPw.focus();
+    return;
+  }
+
+  const sessionUser = { id: user.id, name: user.name };
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionUser));
+  showApp(sessionUser);
+  loadNotes();
+  renderList();
+  const first = getFiltered()[0];
+  if (first) selectNote(first.id);
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('app').style.display = 'none';
+  $loginId.value = ''; $loginPw.value = '';
+  clearAllErrors();
+  document.getElementById('login-screen').style.display = 'flex';
+  setTimeout(() => $loginId.focus(), 100);
+}
+
+// 이벤트 바인딩
+document.getElementById('login-btn').addEventListener('click', doLogin);
+$loginId.addEventListener('keydown', e => { if (e.key === 'Enter') $loginPw.focus(); });
+$loginPw.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+$loginId.addEventListener('input', () => { clearFieldErr($loginIdErr); $loginId.classList.remove('error'); });
+$loginPw.addEventListener('input', () => { clearFieldErr($loginPwErr); $loginPw.classList.remove('error'); });
+document.getElementById('logout-btn').addEventListener('click', doLogout);
+
+// 메모 앱 로직
+const STORAGE_KEY = 'anchors-notes-v1';
+let notes = [], activeId = null, filterTag = '전체', searchQ = '', autosaveTimer = null;
 const $noteList=$('note-list'),$noteCount=$('note-count'),$search=$('search');
 const $tagBtns=document.querySelectorAll('.tag-btn'),$btnNew=$('btn-new');
 const $emptyState=$('empty-state'),$editorWrap=$('editor-wrap'),$tagSelect=$('tag-select');
 const $titleInput=$('title-input'),$bodyInput=$('body-input');
 const $btnPin=$('btn-pin'),$btnSave=$('btn-save'),$btnDelete=$('btn-delete'),$btnCopy=$('btn-copy');
 const $footerDate=$('footer-date'),$footerChars=$('footer-chars'),$autosaveInd=$('autosave-ind'),$toast=$('toast');
+function $(id){return document.getElementById(id);}
 function loadNotes(){try{notes=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];}catch{notes=[];}if(!notes.length)seedSamples();}
 function saveNotes(){localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));}
-function seedSamples(){const n=Date.now();notes=[{id:n-4000,title:'🚀 ATN v1.2.0 — 로그인 추가',body:'개인 계정 인증이 추가됐다.
+function seedSamples(){const n=Date.now();notes=[{id:n-4000,title:'🚀 ATN 프로젝트 킥오프',body:'팀 메모장 v1.2.1
 
-계정: ssbaek / anchors2026!',tag:'업무',pinned:true,createdAt:n-4000,updatedAt:n-4000},{id:n-3000,title:'디자인 시스템 컬러',body:'Primary: #1F0AAD
-Accent: #00BEFD',tag:'아이디어',pinned:false,createdAt:n-3000,updatedAt:n-3000},{id:n-2000,title:'팀 미팅 노트',body:'v1.2.0 로그인 기능 검토 완료',tag:'회의',pinned:false,createdAt:n-2000,updatedAt:n-2000},{id:n-1000,title:'⚠️ 배포 체크',body:'- [x] 로그인
+로그인: ssbaek / anchors2026',tag:'업무',pinned:true,createdAt:n-4000,updatedAt:n-4000},{id:n-3000,title:'디자인 시스템 컬러',body:'Primary: #1F0AAD
+Accent: #00BEFD',tag:'아이디어',pinned:false,createdAt:n-3000,updatedAt:n-3000},{id:n-2000,title:'팀 미팅 노트',body:'v1.2.1 유효성 검사 개선 완료',tag:'회의',pinned:false,createdAt:n-2000,updatedAt:n-2000},{id:n-1000,title:'⚠️ 배포 체크',body:'- [x] 로그인 인증
+- [x] 필드 유효성 검사
 - [ ] 마크다운
 - [ ] Supabase',tag:'중요',pinned:false,createdAt:n-1000,updatedAt:n-1000},{id:n,title:'Backlog',body:'내보내기, 복제, 드래그앤드롭…',tag:'기타',pinned:false,createdAt:n,updatedAt:n}];saveNotes();}
 function fmtDate(ts){if(!ts)return'—';const d=new Date(ts),p=n=>String(n).padStart(2,'0');return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
